@@ -1,0 +1,38 @@
+# LaTeX
+*.aux
+*.log
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.dvi
+*.ps
+*.pdfsync
+*.toc
+*.lot
+*.lof
+*.idx
+*.ind
+*.ilg
+*.out
+*.nav
+*.snm
+*.vrb
+*.bbl
+*.blg
+*.brf
+*.thm
+*.gz
+*.ist
+*.loa
+*.loa
+*.xdy
+
+# LuaTeX
+*.lua
+*.luc
+*.tuc
+
+
+# Proseminar PDF Files
+*Proseminar.pdf
+Proseminar/Proseminar.pdf

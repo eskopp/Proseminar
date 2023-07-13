@@ -1,0 +1,23 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+
+\begin{document}
+
+\begin{tikzpicture}
+	\tikzstyle{level 1}=[sibling distance=60mm,level distance=.6cm]
+	\tikzstyle{level 2}=[sibling distance=30mm,level distance=.6cm]
+	\tikzstyle{level 3}=[sibling distance=15mm,level distance=.6cm]
+	\tikzstyle{level 4}=[sibling distance=10mm,level distance=.6cm]
+
+	\node at (0,0) {1}
+	child{ node{2}
+		child{ node{3} }
+		child{ node{4}
+			child{ node{5} }
+			child{ node{6} }
+		}
+	};
+\end{tikzpicture}
+
+\end{document}
