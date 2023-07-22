@@ -1,0 +1,88 @@
+name: LaTeX to Nextcloud
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up LaTeX
+        run: |
+          sudo apt-get install -y texlive-latex-extra
+          sudo apt-get install -y texlive-fonts-recommended
+          sudo apt-get install -y texlive-publishers
+          sudo apt-get install -y texlive-science
+          sudo apt-get install -y texlive-pstricks
+          sudo apt-get install -y texlive-pictures
+          sudo apt-get install -y texlive-metapost
+          sudo apt-get install -y texlive-music
+          sudo apt-get install -y texlive-xetex
+          sudo apt-get install -y texlive-luatex
+          sudo apt-get install -y texlive-games
+          sudo apt-get install -y texlive-humanities
+
+      - name: Build PDFs
+        run: |
+          cd Proseminar
+          pdflatex -interaction=nonstopmode -halt-on-error seminar.tex
+          ls -aril
+          cp seminar.pdf ../Proseminar.pdf
+          cd ..
+  
+
+      - name: Upload PDF Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-pdf
+          path: Proseminar.pdf
+
+      - name: Install WebDAV client
+        run: sudo apt-get install -y davfs2
+
+      - name: File Tree
+        run: |
+          sudo apt-get install -y tree
+          tree
+
+      - name: Create and upload PDF to Nextclouds
+        run: |
+            NEXTCLOUD_URL="${{ secrets.NEXTCLOUD_WEBDAV_URL }}/"
+            USERNAME="${{ secrets.NEXTCLOUD_USERNAME }}"
+            PASSWORD="${{ secrets.NEXTCLOUD_PASSWORD }}"
+            PDF_FILE="Proseminar.pdf"
+        
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "$USERNAME:$PASSWORD" -T "$PDF_FILE" "$NEXTCLOUD_URL")
+        
+            case $HTTP_STATUS in
+              201)
+                echo "PDF-Datei wurde erfolgreich hochgeladen."
+                ;;
+              204)
+                echo "PDF-Datei wurde erfolgreich aktualisiert."
+                ;;
+              400)
+                echo "Fehlerhafter Request. Bitte überprüfen Sie die Anfrageparameter."
+                ;;
+              401)
+                echo "Authentifizierung fehlgeschlagen. Bitte überprüfen Sie die Zugangsdaten."
+                ;;
+              403)
+                echo "Zugriff verweigert. Stellen Sie sicher, dass Sie die erforderlichen Berechtigungen haben."
+                ;;
+              404)
+                echo "Die Nextcloud-URL oder der angegebene Ordner existiert nicht."
+                ;;
+              *)
+                echo "Fehler beim Hochladen/Aktualisieren der PDF-Datei. Serverantwort-Statuscode: $HTTP_STATUS"
+                ;;
+                esac
