@@ -56,7 +56,7 @@ jobs:
 
       - name: Create and upload PDF to Nextclouds
         run: |
-            NEXTCLOUD_URL="${{ secrets.NEXTCLOUD_WEBDAV_URL }}/"
+            NEXTCLOUD_URL="${{ secrets.NEXTCLOUD_WEBDAV_URL }}${{ secrets.NEXTCLOUD_PATH }}/"
             USERNAME="${{ secrets.NEXTCLOUD_USERNAME }}"
             PASSWORD="${{ secrets.NEXTCLOUD_PASSWORD }}"
             PDF_FILE="Proseminar.pdf"
