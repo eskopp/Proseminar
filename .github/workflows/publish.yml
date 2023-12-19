@@ -14,27 +14,19 @@ jobs:
 
     steps:
       - name: Checkout Repository
+        uses: actions/checkout@v3
+      
+      - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Set up LaTeX
-        run: |
-          sudo apt-get install -y texlive-latex-extra
-          sudo apt-get install -y texlive-fonts-recommended
-          sudo apt-get install -y texlive-publishers
-          sudo apt-get install -y texlive-science
-          sudo apt-get install -y texlive-pstricks
-          sudo apt-get install -y texlive-pictures
-          sudo apt-get install -y texlive-metapost
-          sudo apt-get install -y texlive-music
-          sudo apt-get install -y texlive-xetex
-          sudo apt-get install -y texlive-luatex
-          sudo apt-get install -y texlive-games
-          sudo apt-get install -y texlive-humanities
+    
+      - uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: Proseminar
+          root_file: seminar.tex
 
       - name: Build PDFs
         run: |
           cd Proseminar
-          pdflatex -interaction=nonstopmode -halt-on-error seminar.tex
           ls -aril
           cp seminar.pdf ../Proseminar.pdf
           cd ..
@@ -43,7 +35,7 @@ jobs:
       - name: Upload PDF Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: my-pdf
+          name: Proseminar
           path: Proseminar.pdf
 
       - name: Install WebDAV client
